@@ -1,0 +1,8 @@
+Instructions for how to set up and run the project locally
+1.	I have exported the sql database created in php my admin and put that file in the folder. First create the database using php my admin or any other sql related thing. If php my admin cannot put the database directly outside the file, create a database with the same name as the database, open the file with a code editor and use the sql code in it to insert sql in the created database and go. The tables are successfully created.
+2.	After that, copy or save the project file that I have included here to a desired location and open it with a code editor like vs code. When putting the project on github, node modules cannot be put that way, so I put it in the github repo without those files. Therefore, add the npm package to the project using "npm install" in the terminal. In the vs code, open the terminal there and select the file direct and use "npm run dev" to run the local server. This will load the page from the main route of the browser.
+3.	I have defined the backend part that handles products such as API routes under a separate port number. Therefore, open a new terminal and run it.  Use "node server.js" to run the same server.
+4.	Since access to firebase data created for user handling is given by the code itself, I think there is no need to present it separately. If such a need arises, I kindly request you to inform me about it.
+The above mentioned things are required to set up the project itself. If any question arises, please contact me on the following number or send me an email.
+phone no:- 078 436 7735
+Email- yomalthushara2295266@gmail.com
