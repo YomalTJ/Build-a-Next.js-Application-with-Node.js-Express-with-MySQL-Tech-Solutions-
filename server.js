@@ -76,17 +76,6 @@ app.get('/product-info/:product_id', (req, res) => {
   });
 });
 
-// Update Product
-app.put('/products/:id', (req, res) => {
-  const { id } = req.params;
-  const { name } = req.body;
-  const sql = 'UPDATE product SET name = ? WHERE id = ?';
-  db.query(sql, [name, id], (err) => {
-    if (err) throw err;
-    res.send({ id, name });
-  });
-});
-
 // Update Product Info
 app.put('/product-info/:id', (req, res) => {
   const { id } = req.params;
@@ -100,21 +89,17 @@ app.put('/product-info/:id', (req, res) => {
 
 // Delete Product
 app.delete('/products/:id', (req, res) => {
-  const { id } = req.params;
-  const sql = 'DELETE FROM product WHERE id = ?';
-  db.query(sql, [id], (err) => {
-    if (err) throw err;
-    res.send({ message: 'Product deleted' });
-  });
-});
+  const productId = req.params.id;
+  const deleteProduct = 'DELETE FROM product WHERE id = ?';
+  const deleteProductInfo = 'DELETE FROM product_info WHERE product_id = ?';
 
-// Delete Product Info
-app.delete('/product-info/:id', (req, res) => {
-  const { id } = req.params;
-  const sql = 'DELETE FROM product_info WHERE id = ?';
-  db.query(sql, [id], (err) => {
+  db.query(deleteProductInfo, [productId], (err, result) => {
     if (err) throw err;
-    res.send({ message: 'Product info deleted' });
+
+    db.query(deleteProduct, [productId], (err, result) => {
+      if (err) throw err;
+      res.status(204).send();
+    });
   });
 });
 
@@ -131,6 +116,28 @@ app.get('/products-all', (req, res) => {
       return res.status(500).json({ error: error.message });
     }
     res.json(results);
+  });
+});
+
+// Update Product and Product Info
+app.put('/products/:id', (req, res) => {
+  const productId = req.params.id;
+  const { name, description, price, category } = req.body;
+
+  const updateProduct = 'UPDATE product SET name = ? WHERE id = ?';
+  const updateProductInfo = `
+    INSERT INTO product_info (product_id, description, price, category) 
+    VALUES (?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE description = VALUES(description), price = VALUES(price), category = VALUES(category)
+  `;
+
+  db.query(updateProduct, [name, productId], (err, result) => {
+    if (err) throw err;
+
+    db.query(updateProductInfo, [productId, description, price, category], (err, result) => {
+      if (err) throw err;
+      res.status(200).send({ id: productId, name, description, price, category });
+    });
   });
 });
 
